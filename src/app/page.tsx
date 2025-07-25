@@ -1,103 +1,282 @@
-import Image from "next/image";
+import { UserButton } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { getAllCharacters, PublicCharacterData } from './characters/actions'
 
-export default function Home() {
+export default async function HomePage() {
+  const user = await currentUser()
+  
+  if (!user) {
+    redirect('/sign-in')
+  }
+
+  // Fetch all characters for public display
+  const charactersResult = await getAllCharacters()
+  const allCharacters = charactersResult.success ? charactersResult.characters || [] : []
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900">
+      {/* Header */}
+      <header className="bg-black/20 backdrop-blur-sm border-b border-purple-500/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center">
+              <h1 className="text-3xl font-bold text-white">BUGCHUD</h1>
+              <span className="ml-3 text-purple-300 text-sm">Dark Fantasy RPG</span>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-300">Welcome, {user.firstName || user.username || 'Adventurer'}</span>
+              <UserButton 
+                appearance={{
+                  elements: {
+                    avatarBox: 'w-10 h-10'
+                  }
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <h2 className="text-5xl font-bold text-white mb-4">
+            Enter the Realm of Psydonia
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Create characters, engage in deadly combat, and survive the corrupted wastelands 
+            in this digital implementation of the BUGCHUD tabletop RPG system.
+          </p>
+        </div>
+
+        {/* Feature Cards */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <FeatureCard
+            title="Character Creator"
+            description="Build your perfect character with races, origins, backgrounds, and equipment from the BUGCHUD universe."
+            icon="🧙‍♂️"
+            href="/character-creator"
+          />
+          
+          <FeatureCard
+            title="Battle Simulator"
+            description="Engage in tactical combat with the full BUGCHUD combat system including magic, mutations, and Xom corruption."
+            icon="⚔️"
+            href="/battle-sim"
+            status="Coming Soon"
+          />
+          
+          <FeatureCard
+            title="Campaign Manager"
+            description="Organize your campaigns, manage NPCs, and track character progression across sessions."
+            icon="📖"
+            href="/campaigns"
+            status="Coming Soon"
+          />
+        </div>
+
+        {/* All Characters Gallery */}
+        <div className="mb-12">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-3xl font-bold text-white">Character Gallery</h3>
+            <p className="text-gray-300">Discover characters created by the community</p>
+          </div>
+          
+          {allCharacters.length === 0 ? (
+            <div className="bg-black/20 backdrop-blur-sm border border-purple-500/30 rounded-lg p-12 text-center">
+              <div className="text-6xl mb-4">🧙‍♂️</div>
+              <h4 className="text-xl font-bold text-white mb-2">No Characters Yet</h4>
+              <p className="text-gray-300">Be the first to create a character!</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {allCharacters.slice(0, 12).map((character) => (
+                <CharacterCard key={character.id} character={character} />
+              ))}
+            </div>
+          )}
+          
+          {allCharacters.length > 12 && (
+            <div className="text-center mt-6">
+              <Link 
+                href="/characters"
+                className="inline-block px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors"
+              >
+                View All Characters
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Quick Actions */}
+        <div className="bg-black/20 backdrop-blur-sm border border-purple-500/30 rounded-lg p-8">
+          <h3 className="text-2xl font-bold text-white mb-6">Quick Actions</h3>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <QuickActionButton
+              title="New Character"
+              description="Start creating"
+              icon="✨"
+              href="/character-creator"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <QuickActionButton
+              title="My Characters"
+              description="Manage roster"
+              icon="👥"
+              href="/characters"
+            />
+            <QuickActionButton
+              title="Join Battle"
+              description="Enter combat"
+              icon="🎲"
+              href="/battle-sim"
+            />
+            <QuickActionButton
+              title="Rules Reference"
+              description="Learn system"
+              icon="📚"
+              href="/rules"
+            />
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
-  );
+  )
+}
+
+function FeatureCard({ 
+  title, 
+  description, 
+  icon, 
+  href, 
+  status 
+}: { 
+  title: string
+  description: string
+  icon: string
+  href: string
+  status?: string
+}) {
+  return (
+    <div className="bg-black/20 backdrop-blur-sm border border-purple-500/30 rounded-lg p-6 hover:border-purple-400/50 transition-colors">
+      <div className="text-4xl mb-4">{icon}</div>
+      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-gray-300 mb-4">{description}</p>
+      {status ? (
+        <span className="inline-block px-3 py-1 text-sm bg-purple-600/30 text-purple-300 rounded-full">
+          {status}
+        </span>
+      ) : (
+        <Link 
+          href={href}
+          className="inline-block px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+        >
+          Launch
+        </Link>
+      )}
+    </div>
+  )
+}
+
+function CharacterCard({ character }: { character: PublicCharacterData }) {
+  return (
+    <Link
+      href={`/characters/${character.id}`}
+      className="block bg-black/20 backdrop-blur-sm border border-purple-500/30 rounded-lg p-4 hover:border-purple-400/50 transition-colors group"
+    >
+      {/* Character Avatar */}
+      <div className="flex items-center mb-3">
+        <div className="w-12 h-12 bg-gray-800/50 rounded-full flex items-center justify-center text-xl mr-3">
+          🧙‍♂️
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className="text-lg font-bold text-white truncate group-hover:text-purple-300 transition-colors">
+            {character.name}
+          </h4>
+          <p className="text-sm text-gray-400 truncate">
+            by {character.createdBy}
+          </p>
+        </div>
+      </div>
+
+      {/* Character Info */}
+      <div className="space-y-2 text-sm">
+        <div className="flex justify-between">
+          <span className="text-gray-400">Race:</span>
+          <span className="text-white">{character.race.name}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-gray-400">Origin:</span>
+          <span className="text-white">{character.origin.name}</span>
+        </div>
+        
+        {/* Backgrounds */}
+        <div>
+          <span className="text-gray-400 text-xs">Backgrounds:</span>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {character.backgrounds.slice(0, 2).map((bg, index) => (
+              <span
+                key={index}
+                className="text-xs bg-purple-600/20 text-purple-300 px-2 py-1 rounded"
+              >
+                {bg.name}
+              </span>
+            ))}
+            {character.backgrounds.length > 2 && (
+              <span className="text-xs text-gray-400">
+                +{character.backgrounds.length - 2} more
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Faith */}
+        {character.faith && (
+          <div className="flex justify-between">
+            <span className="text-gray-400">Faith:</span>
+            <span className="text-yellow-400 flex items-center">
+              {character.faith.name}
+              {character.covenant && (
+                <span className="ml-1 text-xs bg-yellow-600/20 text-yellow-400 px-1 rounded">
+                  Covenant
+                </span>
+              )}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Created Date */}
+      <div className="mt-3 pt-3 border-t border-gray-700/50">
+        <div className="text-xs text-gray-500">
+          Created: {new Date(character.createdAt).toLocaleDateString()}
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function QuickActionButton({ 
+  title, 
+  description, 
+  icon, 
+  href 
+}: { 
+  title: string
+  description: string
+  icon: string
+  href: string
+}) {
+  return (
+    <Link 
+      href={href}
+      className="block p-4 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-lg transition-colors group"
+    >
+      <div className="text-2xl mb-2">{icon}</div>
+      <div className="text-white font-semibold">{title}</div>
+      <div className="text-sm text-gray-300">{description}</div>
+    </Link>
+  )
 }
