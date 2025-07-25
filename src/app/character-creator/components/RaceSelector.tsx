@@ -29,7 +29,7 @@ export function RaceSelector({
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-white mb-4">Choose Your Race</h2>
         <p className="text-gray-300">
-          Each race has different attribute loyalties that will affect your character's capabilities.
+          Each race has different attribute loyalties that will affect your character&apos;s capabilities.
         </p>
       </div>
 

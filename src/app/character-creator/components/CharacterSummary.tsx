@@ -3,7 +3,7 @@
 import { applyRacialModifiers, calculateDerivedStats } from '@/utils/character-data'
 
 interface CharacterSummaryProps {
-  character: any
+  character: any // eslint-disable-line @typescript-eslint/no-explicit-any
   onConfirm: () => Promise<void>
   onEdit: (step: number) => void
   onPrev: () => void
@@ -141,8 +141,8 @@ export function CharacterSummary({
               </button>
             </div>
             
-            <div className="space-y-2">
-              {character.backgrounds?.map((bg: any, index: number) => (
+                          <div className="space-y-2">
+                {character.backgrounds?.map((bg: { name: string; isUnique?: boolean }, index: number) => (
                 <div key={index} className="flex justify-between items-center">
                   <span className="text-white">{bg.name}</span>
                   {bg.isUnique && (
@@ -175,7 +175,7 @@ export function CharacterSummary({
                 <div>
                   <h4 className="text-sm font-semibold text-purple-300 mb-1">Weapons</h4>
                   <ul className="text-sm text-gray-300">
-                    {character.equipment.weapons.map((weapon: any, index: number) => (
+                    {character.equipment.weapons.map((weapon: { name: string }, index: number) => (
                       <li key={index}>• {weapon.name}</li>
                     ))}
                   </ul>
@@ -186,7 +186,7 @@ export function CharacterSummary({
                 <div>
                   <h4 className="text-sm font-semibold text-purple-300 mb-1">Armor</h4>
                   <ul className="text-sm text-gray-300">
-                    {character.equipment.armor.map((armor: any, index: number) => (
+                    {character.equipment.armor.map((armor: { name: string }, index: number) => (
                       <li key={index}>• {armor.name}</li>
                     ))}
                   </ul>
@@ -197,7 +197,7 @@ export function CharacterSummary({
                 <div>
                   <h4 className="text-sm font-semibold text-purple-300 mb-1">Equipment</h4>
                   <ul className="text-sm text-gray-300">
-                    {character.equipment.equipment.map((equipment: any, index: number) => (
+                    {character.equipment.equipment.map((equipment: { name: string }, index: number) => (
                       <li key={index}>• {equipment.name}</li>
                     ))}
                   </ul>
@@ -208,7 +208,7 @@ export function CharacterSummary({
                 <div>
                   <h4 className="text-sm font-semibold text-purple-300 mb-1">Containers</h4>
                   <ul className="text-sm text-gray-300">
-                    {character.equipment.containers.map((container: any, index: number) => (
+                    {character.equipment.containers.map((container: { name: string }, index: number) => (
                       <li key={index}>• {container.name}</li>
                     ))}
                   </ul>
@@ -255,7 +255,7 @@ export function CharacterSummary({
 
           {/* Special Abilities */}
           {(character.race?.specialRules?.length > 0 || 
-            character.backgrounds?.some((bg: any) => bg.specialAbilities?.length > 0)) && (
+            character.backgrounds?.some((bg: { specialAbilities?: string[] }) => bg.specialAbilities && bg.specialAbilities.length > 0)) && (
             <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-6">
               <h3 className="text-xl font-bold text-white mb-4">Special Abilities</h3>
               
@@ -271,12 +271,12 @@ export function CharacterSummary({
                   </div>
                 )}
 
-                {character.backgrounds?.map((bg: any, bgIndex: number) => (
-                  bg.specialAbilities?.length > 0 && (
+                {character.backgrounds?.map((bg: { name: string; specialAbilities?: string[] }, bgIndex: number) => (
+                  bg.specialAbilities && bg.specialAbilities.length > 0 && (
                     <div key={bgIndex}>
                       <h4 className="text-sm font-semibold text-purple-300 mb-1">{bg.name} Abilities</h4>
                       <ul className="text-sm text-gray-300">
-                        {bg.specialAbilities.map((ability: string, index: number) => (
+                        {bg.specialAbilities?.map((ability: string, index: number) => (
                           <li key={index}>• {ability}</li>
                         ))}
                       </ul>

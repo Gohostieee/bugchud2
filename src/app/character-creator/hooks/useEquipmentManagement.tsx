@@ -6,7 +6,6 @@ import {
   MoneyState, 
   EncumbranceState,
   Armor,
-  Container,
   calculateTotalCost,
   calculateArmorPenalty,
   calculateEncumbrance,

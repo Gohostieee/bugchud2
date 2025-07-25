@@ -4,8 +4,6 @@ import { useState, useCallback, useEffect } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { 
   generateAttributes as generateAttributesUtil,
-  applyRacialModifiers,
-  calculateDerivedStats,
   validateCharacterBackgrounds,
   Race,
   Origin,
@@ -137,6 +135,7 @@ export function useCharacterCreation() {
                    state.details.name.trim().length > 0
 
     setState(prev => ({ ...prev, errors, isValid }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.attributes, state.race, state.origin, state.backgrounds, state.details, validateState])
 
   const generateAttributes = useCallback((assignedAttributes?: GeneratedAttributes) => {
@@ -191,7 +190,7 @@ export function useCharacterCreation() {
       const { buildCharacterFromState } = await import('../utils/character-builder')
       
       // Cast user to correct type for character builder
-      const character = buildCharacterFromState(state, user as any)
+      const character = buildCharacterFromState(state, user as any) // eslint-disable-line @typescript-eslint/no-explicit-any
       const result = await saveCharacterAction(character)
       
       if (!result.success) {

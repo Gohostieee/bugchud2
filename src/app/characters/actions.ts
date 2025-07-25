@@ -69,6 +69,25 @@ export async function getUserCharacters(): Promise<{ success: boolean; character
   }
 }
 
+// Firebase document data interface
+interface FirebaseCharacterData {
+  name: string
+  race: { name: string }
+  origin: { name: string }
+  backgrounds: { name: string }[]
+  faith?: { name: string }
+  covenant: boolean
+  userRef: {
+    clerkId: string
+    username?: string
+    createdBy?: string
+    lastModifiedBy?: string
+  }
+  createdAt: { toDate?: () => Date } | string // Firebase Timestamp or string
+  updatedAt: { toDate?: () => Date } | string // Firebase Timestamp or string
+  [key: string]: unknown // Allow other character properties
+}
+
 // Public character data interface - only safe data for display
 export interface PublicCharacterData {
   id: string
@@ -91,7 +110,7 @@ export async function getAllCharacters(): Promise<{ success: boolean; characters
       .get()
 
     const characters: PublicCharacterData[] = snapshot.docs.map(doc => {
-      const data = doc.data() as any
+      const data = doc.data() as FirebaseCharacterData
       
       // Only return safe, public data - no user IDs or sensitive info
       return {
@@ -99,11 +118,11 @@ export async function getAllCharacters(): Promise<{ success: boolean; characters
         name: data.name || 'Unknown',
         race: { name: data.race?.name || 'Unknown' },
         origin: { name: data.origin?.name || 'Unknown' },
-        backgrounds: (data.backgrounds || []).map((bg: any) => ({ name: bg.name || 'Unknown' })),
+        backgrounds: (data.backgrounds || []).map((bg: { name: string }) => ({ name: bg.name || 'Unknown' })),
         faith: data.faith ? { name: data.faith.name } : undefined,
         covenant: data.covenant || false,
         createdBy: data.userRef?.username || data.userRef?.createdBy || 'Anonymous',
-        createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt || new Date().toISOString()
+        createdAt: (typeof data.createdAt === 'object' && data.createdAt?.toDate) ? data.createdAt.toDate().toISOString() : (typeof data.createdAt === 'string' ? data.createdAt : new Date().toISOString())
       }
     })
 
@@ -173,7 +192,7 @@ export async function updateCharacter(characterId: string, updates: Partial<Char
     await docRef.update({
       ...updates,
       updatedAt: new Date().toISOString(),
-      version: (characterData as any).version + 1 || 1
+      version: (typeof characterData === 'object' && characterData && 'version' in characterData ? (characterData.version as number || 0) : 0) + 1
     })
 
     revalidatePath('/characters')

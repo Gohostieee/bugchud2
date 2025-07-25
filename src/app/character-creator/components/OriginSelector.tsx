@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ORIGINS, BACKGROUNDS, Origin, Background, getBackgroundsByOrigin } from '@/utils/character-data'
+import { ORIGINS, Origin, Background, getBackgroundsByOrigin } from '@/utils/character-data'
 import { ValidationErrors } from '../hooks/useCharacterCreation'
 
 interface OriginSelectorProps {
@@ -50,7 +50,7 @@ export function OriginSelector({
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-white mb-4">Choose Origin & Backgrounds</h2>
         <p className="text-gray-300">
-          Select your character's origin, then choose 3 backgrounds (minimum 2 from your origin).
+          Select your character&apos;s origin, then choose 3 backgrounds (minimum 2 from your origin).
         </p>
       </div>
 
@@ -101,7 +101,6 @@ export function OriginSelector({
             {availableBackgrounds.map((background) => {
               const isSelected = selectedBackgrounds.some(bg => bg.id === background.id)
               const canSelect = selectedBackgrounds.length < 3 || isSelected
-              const uniqueCount = selectedBackgrounds.filter(bg => bg.isUnique).length
 
               return (
                 <div

@@ -8,7 +8,8 @@ import {
   CONTAINER_TYPES,
   Weapon,
   Armor as ArmorType,
-  Equipment as EquipmentType
+  Equipment as EquipmentType,
+  Container
 } from '@/utils/character-data'
 import { SelectedEquipment, ValidationErrors } from '../hooks/useCharacterCreation'
 import { useEquipmentManagement } from '../hooks/useEquipmentManagement'
@@ -42,7 +43,7 @@ export function EquipmentBrowser({
   const [activeTab, setActiveTab] = useState<'weapons' | 'armor' | 'equipment' | 'containers'>('weapons')
   
   // Use equipment management system (money not used for validation anymore)
-  const { money, encumbrance, canSelectItem } = useEquipmentManagement(startingZimes, selectedEquipment)
+  const { encumbrance, canSelectItem } = useEquipmentManagement(startingZimes, selectedEquipment)
 
   const handleWeaponAdd = (weapon: Weapon) => {
     const validation = canSelectItem(weapon)
@@ -98,17 +99,17 @@ export function EquipmentBrowser({
     onEquipmentSelected(newEquipment)
   }
 
-  const handleContainerAdd = (container: any) => {
+  const handleContainerAdd = (container: Container) => {
     const newEquipment = addItemToEquipment(selectedEquipment, container)
     onEquipmentSelected(newEquipment)
   }
 
-  const handleContainerRemove = (container: any) => {
+  const handleContainerRemove = (container: Container) => {
     const newEquipment = removeItemFromEquipment(selectedEquipment, container)
     onEquipmentSelected(newEquipment)
   }
 
-  const handleContainerRemoveAll = (container: any) => {
+  const handleContainerRemoveAll = (container: Container) => {
     const newEquipment = removeAllItemsFromEquipment(selectedEquipment, container)
     onEquipmentSelected(newEquipment)
   }
@@ -628,7 +629,7 @@ export function EquipmentBrowser({
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-white mb-4">Select Equipment</h2>
         <p className="text-gray-300">
-          Choose weapons, armor, and equipment for your character. Items marked "Starting" come from your backgrounds. All equipment is free to select. Use +/- buttons to select multiple copies of items.
+          Choose weapons, armor, and equipment for your character. Items marked &quot;Starting&quot; come from your backgrounds. All equipment is free to select. Use +/- buttons to select multiple copies of items.
         </p>
         {errors.equipment && (
           <p className="text-red-400 text-sm mt-2">{errors.equipment}</p>
@@ -661,7 +662,7 @@ export function EquipmentBrowser({
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'weapons' | 'armor' | 'equipment' | 'containers')}
               className={`
                 py-2 px-1 border-b-2 font-medium text-sm transition-colors
                 ${activeTab === tab.id

@@ -53,7 +53,7 @@ export function CharacterDetails({
               focus:outline-none focus:ring-2 focus:ring-purple-500
               ${errors.name ? 'border-red-500' : 'border-purple-500/30'}
             `}
-            placeholder="Enter your character's name"
+                            placeholder="Enter your character&apos;s name"
           />
           {errors.name && (
             <p className="mt-2 text-sm text-red-400">{errors.name}</p>
@@ -78,7 +78,7 @@ export function CharacterDetails({
               w-full px-4 py-3 bg-gray-800/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-400
               focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none
             "
-            placeholder="Describe your character's appearance, mannerisms, or distinguishing features..."
+                            placeholder="Describe your character&apos;s appearance, mannerisms, or distinguishing features..."
           />
           <p className="mt-2 text-sm text-gray-400">
             {characterDetails.description.length}/500 characters
@@ -100,7 +100,7 @@ export function CharacterDetails({
               w-full px-4 py-3 bg-gray-800/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-400
               focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none
             "
-            placeholder="Share your character's history, motivations, quirks, or goals..."
+                            placeholder="Share your character&apos;s history, motivations, quirks, or goals..."
           />
           <p className="mt-2 text-sm text-gray-400">
             {characterDetails.notes.length}/500 characters
@@ -111,9 +111,9 @@ export function CharacterDetails({
         <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-6">
           <h3 className="text-lg font-semibold text-purple-300 mb-3">Character Creation Tips</h3>
           <ul className="text-sm text-gray-300 space-y-2">
-            <li>• Consider how your chosen race and backgrounds influence your character's appearance</li>
-            <li>• Think about your character's motivations and how they ended up as an adventurer</li>
-            <li>• Your faith choice (or lack thereof) might affect your character's worldview</li>
+            <li>• Consider how your chosen race and backgrounds influence your character&apos;s appearance</li>
+            <li>• Think about your character&apos;s motivations and how they ended up as an adventurer</li>
+            <li>• Your faith choice (or lack thereof) might affect your character&apos;s worldview</li>
             <li>• Remember this is the dark fantasy world of Psydonia - embrace the grim atmosphere</li>
             <li>• Consider how mutations or Xom corruption might have affected your character</li>
           </ul>

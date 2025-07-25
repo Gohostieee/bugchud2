@@ -2,7 +2,6 @@ import { User } from '@clerk/nextjs/server'
 import { 
   applyRacialModifiers, 
   calculateDerivedStats,
-  Character,
   Background
 } from '@/utils/character-data'
 import type { CharacterCreationState } from '../hooks/useCharacterCreation'

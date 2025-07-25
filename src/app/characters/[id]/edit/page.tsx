@@ -352,7 +352,7 @@ export default function CharacterEditPage({ params }: CharacterEditPageProps) {
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   rows={4}
                   className="w-full px-3 py-2 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 resize-vertical"
-                  placeholder="Describe your character's appearance, personality, etc."
+                  placeholder="Describe your character&apos;s appearance, personality, etc."
                 />
               </div>
 
@@ -464,7 +464,7 @@ export default function CharacterEditPage({ params }: CharacterEditPageProps) {
           <div className="bg-black/20 backdrop-blur-sm border border-purple-500/30 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-white mb-6">Equipment & Inventory</h2>
             <p className="text-gray-300 mb-6">
-              Manage your character's weapons, armor, and equipment. Changes affect encumbrance.
+              Manage your character&apos;s weapons, armor, and equipment. Changes affect encumbrance.
             </p>
             
             <EquipmentManager

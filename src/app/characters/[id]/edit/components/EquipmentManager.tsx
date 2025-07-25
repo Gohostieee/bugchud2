@@ -35,7 +35,7 @@ export function EquipmentManager({
   const [activeTab, setActiveTab] = useState<'weapons' | 'armor' | 'equipment' | 'containers'>('weapons')
   
   // Use equipment management system with current zimes
-  const { money, encumbrance, canSelectItem } = useEquipmentManagement(currentZimes, currentEquipment)
+  const { encumbrance, canSelectItem } = useEquipmentManagement(currentZimes, currentEquipment)
 
   const handleWeaponAdd = (weapon: Weapon) => {
     const validation = canSelectItem(weapon)
@@ -607,7 +607,7 @@ export function EquipmentManager({
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'weapons' | 'armor' | 'equipment' | 'containers')}
               className={`
                 py-2 px-1 border-b-2 font-medium text-sm transition-colors
                 ${activeTab === tab.id

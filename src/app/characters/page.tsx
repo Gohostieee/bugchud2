@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { useUser } from '@clerk/nextjs'
 import { Character } from '@/utils/character-data'
 import { getUserCharacters, getAllCharacters, PublicCharacterData } from './actions'
@@ -177,7 +178,7 @@ export default function CharactersPage() {
   )
 }
 
-function MyCharacterCard({ character, router }: { character: Character; router: any }) {
+function MyCharacterCard({ character, router }: { character: Character; router: AppRouterInstance }) {
   return (
     <div
       className="bg-black/20 backdrop-blur-sm border border-purple-500/30 rounded-lg p-6 hover:border-purple-400/50 transition-colors cursor-pointer"
@@ -279,7 +280,7 @@ function MyCharacterCard({ character, router }: { character: Character; router: 
   )
 }
 
-function PublicCharacterCard({ character, router }: { character: PublicCharacterData; router: any }) {
+function PublicCharacterCard({ character, router }: { character: PublicCharacterData; router: AppRouterInstance }) {
   return (
     <div
       className="bg-black/20 backdrop-blur-sm border border-purple-500/30 rounded-lg p-6 hover:border-purple-400/50 transition-colors cursor-pointer"
